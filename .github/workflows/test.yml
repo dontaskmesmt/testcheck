@@ -25,12 +25,16 @@ jobs:
           mkdir -p /tmp/clean
           cp test.js /tmp/clean/
           cp package.json /tmp/clean/
+          cp README.md /tmp/clean/
+          cp -r .github /tmp/clean/
           
           git checkout main
-          rm -f test.js package.json multiply.js
+          rm -rf test.js package.json multiply.js README.md .github
           cp /tmp/clean/test.js .
           cp /tmp/clean/package.json .
+          cp /tmp/clean/README.md .
+          cp -r /tmp/clean/.github .
           
-          git add test.js package.json
+          git add test.js package.json README.md .github
           git commit -m "Update" || echo "No changes"
           git push origin main

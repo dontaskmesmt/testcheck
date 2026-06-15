@@ -1,0 +1,36 @@
+name: Test and Push
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node test.js
+  
+  push-to-main:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Push to main
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          
+          mkdir -p /tmp/clean
+          cp test.js /tmp/clean/
+          cp package.json /tmp/clean/
+          
+          git checkout main
+          rm -f test.js package.json multiply.js
+          cp /tmp/clean/test.js .
+          cp /tmp/clean/package.json .
+          
+          git add test.js package.json
+          git commit -m "Update" || echo "No changes"
+          git push origin main
